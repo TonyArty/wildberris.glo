@@ -21,7 +21,7 @@ const getGoods = () => {
         </div>
       `;
       goodsContainer.append(goodBlock);
-      console.log(good);
+      // console.log(good);
     })
   }
 
