@@ -2,18 +2,23 @@ const getGoods = () => {
 
   const links = document.querySelectorAll('.navigation-link');
 
+  const renderGoods = (goods) => {
+    console.log(goods);
+  }
+
   const getData = (value, category) => {
     fetch('https://willberries-glo-default-rtdb.firebaseio.com/db.json')
       .then((res) => res.json())
       .then((data) => {
-        const array = data.filter((item) => item[category] === value)
-        if (category) {
-          console.log('есть');
-        } else {
-          console.log('нет');
-        }
+        const array = category ? data.filter((item) => item[category] === value) : data;
 
         localStorage.setItem('goods', JSON.stringify(array));
+
+        if(window.location.pathname !== '/goods.html') {
+          window.location.href = '/goods.html'
+        } else {
+          renderGoods(array)
+        }
       })
   }
 
@@ -26,14 +31,11 @@ const getGoods = () => {
     })
   })
 
-  // localStorage.setItem('goods', JSON.stringify({ name: 'all' }))
-  // const goods = JSON.parse(localStorage.getItem('goods'));
-  // console.log(goods);
-  // console.log(localStorage);
-  // localStorage.removeItem('goods');
-  // console.log(localStorage);
+  if(localStorage.getItem('goods') && window.location.pathname === '/goods.html') {
+    renderGoods(JSON.parse(localStorage.getItem('goods')))
+  }
 
 }
 getGoods()
 
-// 16:37
+// День 3. 19:25
