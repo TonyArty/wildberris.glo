@@ -6,6 +6,8 @@ const cart = function(){ //encapsulation
 
   const cartTable = document.querySelector('.cart-table__goods');
 
+  const modalForm = document.querySelector('.modal-form');
+
   const deleteCartItem = (id) => {
     const cart = JSON.parse(localStorage.getItem('cart'));
     const newCart = cart.filter(good => {
@@ -16,11 +18,27 @@ const cart = function(){ //encapsulation
   }
   const plusCartItem = (id) => {
     const cart = JSON.parse(localStorage.getItem('cart'));
-    localStorage.setItem('cart', JSON.stringify(cart));
+    const newCart = cart.map(good => {
+      if(good.id === id) {
+        good.count++
+      }
+      return good;
+    })
+    localStorage.setItem('cart', JSON.stringify(newCart));
+    renderCartGoods(JSON.parse(localStorage.getItem('cart')));
   }
   const minusCartItem = (id) => {
     const cart = JSON.parse(localStorage.getItem('cart'));
-    localStorage.setItem('cart', JSON.stringify(cart));
+    const newCart = cart.map(good => {
+      if(good.id === id) {
+        if(good.count > 0) {
+          good.count--
+        }
+      }
+      return good;
+    })
+    localStorage.setItem('cart', JSON.stringify(newCart));
+    renderCartGoods(JSON.parse(localStorage.getItem('cart')));
   }
 
   const addToCart = (id) => {
@@ -62,9 +80,9 @@ const cart = function(){ //encapsulation
       cartTable.append(tr);
       tr.addEventListener('click', (e) => {
         if(e.target.classList.contains('cart-btn-minus')) {
-          console.log('minus');
+          minusCartItem(good.id);
         } else if(e.target.classList.contains('cart-btn-plus')) {
-          console.log('plus');
+          plusCartItem(good.id);
         } else if(e.target.classList.contains('cart-btn-delete')) {
           deleteCartItem(good.id);
         }
@@ -72,6 +90,26 @@ const cart = function(){ //encapsulation
     })
 
   }
+
+  const sendForm = () => {
+    const cartArray = localStorage.getItem('cart') ? 
+      JSON.parse(localStorage.getItem('cart')) : [];
+    fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      body: JSON.stringify({
+        cart: cartArray,
+        name: '',
+        phone: ''
+      })
+    }).then(() => {
+      cart.style.display = '';
+    })
+  }
+
+  modalForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    sendForm();
+  })
 
   cartBtn.addEventListener('click', function() {
     const cartArray = localStorage.getItem('cart') ? 
@@ -108,4 +146,4 @@ const cart = function(){ //encapsulation
 }
 cart()
 
-//16:43
+//29:10
